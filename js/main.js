@@ -147,4 +147,57 @@
       resizeTimer = setTimeout(() => { resize(); seedRoutes(); if (prefersReduced) step(); }, 120);
     });
   }
+
+  // ---------- Metric count-up ----------
+  const metricEls = document.querySelectorAll('.metric-value');
+  if (metricEls.length && 'IntersectionObserver' in window) {
+    const countUp = el => {
+      const target = parseFloat(el.dataset.count || '0');
+      const suffix = el.dataset.suffix || '';
+      if (prefersReduced) { el.textContent = target + suffix; return; }
+      const duration = 1400;
+      const start = performance.now();
+      const tick = now => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const display = Math.round(target * eased);
+        el.textContent = display + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
+      };
+      requestAnimationFrame(tick);
+    };
+    const mio = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { countUp(e.target); mio.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    metricEls.forEach(el => mio.observe(el));
+  }
+
+  // ---------- In-view reveal for timeline nodes ----------
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.node').forEach(n => io.observe(n));
+  } else {
+    document.querySelectorAll('.node').forEach(n => n.classList.add('in-view'));
+  }
+
+  // ---------- Tilt on cards ----------
+  if (window.VanillaTilt && !prefersReduced) {
+    window.VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+      max: 4,
+      speed: 600,
+      glare: true,
+      'max-glare': 0.12,
+      perspective: 1200,
+    });
+  }
 })();

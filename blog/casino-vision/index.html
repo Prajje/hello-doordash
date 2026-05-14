@@ -87,6 +87,11 @@
 
         <p>We pivoted to segmentation, accepting the higher annotation cost. Polygon-mask labeling takes minutes per card instead of seconds per box. In exchange, segmentation gives the model dense per-pixel signal that handles overlap gracefully. Severely overlapping cards separated cleanly. Card identification went from "works most of the time" to reliable enough to trigger the rest of the pipeline.</p>
 
+        <figure>
+          <img src="assets/card-segmentation.jpg" alt="A blackjack table photographed from the camera angle, with each card instance overlaid in a distinct color: the two cards in the left player hand are masked in blue and red, the right player hand's Q of spades and 9 of diamonds in green and yellow, and the dealer's face-down card and Ace of diamonds in purple and teal." />
+          <figcaption>Per-instance segmentation in production. Each card gets its own mask and its own color — including the stacked, partially overlapping cards in each hand. The dense per-pixel signal is what lets the model separate cards that anchor-box detection collapsed into a single object.</figcaption>
+        </figure>
+
         <p>Production card segmentation accuracy reached approximately <strong>99%</strong>.</p>
 
         <p class="phase-h">Phase 3a: ResNet classification</p>

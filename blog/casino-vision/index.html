@@ -128,6 +128,11 @@
 
         <p>Localization is retained even though counting alone would not require it. The reason is downstream player association. The system needs to know not just <em>what</em> chips are on the table but <em>where</em>, in order to identify which player owns which stack, resolve doubles (a second chip stack placed next to a card stack), and resolve splits (a new chip stack added with a new card stack).</p>
 
+        <figure>
+          <img src="assets/chip-detection.jpg" alt="A side-view photograph of a live blackjack table with two chip stacks detected by the model — each enclosed in a dotted green bounding box. The upper stack contains darker (higher-denomination) chips; the lower stack contains blue and white (lower-denomination) chips. Cards are visible across several player positions and the dealer position, but only the chip stacks are highlighted." />
+          <figcaption>Chip detection on the raw side-view frame. The localization head outputs one bounding box per detected stack; the denomination head reads color and edge pattern; the count head estimates how many chips are in the stack. Running this on the native camera frame — not the warped top-down view used elsewhere — preserves the vertical geometry that the count depends on.</figcaption>
+        </figure>
+
         <p>Chip detection runs on the raw side-view camera frame, not on the top-down warped view used by the rest of the perception stack. Homography warping distorts vertical structures, which corrupts the count for stacked chips. Keeping chip detection in the native camera frame preserves the geometry that matters for stack-height estimation. The side-view alone was sufficient to drive production count accuracy to approximately <strong>98%</strong>.</p>
 
         <h2>Player–chip–card association</h2>

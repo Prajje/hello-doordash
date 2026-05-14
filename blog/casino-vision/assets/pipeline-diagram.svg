@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" role="img" aria-label="Block diagram of the edge perception pipeline: camera feeds into gateway, which routes to calibration, card workflow, and chip workflow; card and chip outputs feed K-means clustering, then a game-state machine, then DB or CMS. A pit boss queries an on-device LLM which reads from the DB or CMS.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" role="img" aria-label="Block diagram of the edge perception pipeline: camera feeds into a gateway, which routes frames to a calibration workflow (keypoints + homography), then through a preprocessing block (homography warp) into the card workflow, and directly into the chip workflow as raw side-view. Both workflows feed a card-chip association block (K-means with K equal to the number of card stacks), which feeds a game-state machine, which commits per-game metadata to a DB or CMS. A pit boss queries an on-device LLM which reads the DB.">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#1a1a1a"/>
@@ -18,33 +18,25 @@
   </defs>
 
   <!-- Dashed system boundary -->
-  <rect class="boundary" x="200" y="40" width="850" height="640" rx="22"/>
-  <text class="boundary-label" x="625" y="28" text-anchor="middle">Edge Device</text>
+  <rect class="boundary" x="200" y="40" width="990" height="600" rx="22"/>
+  <text class="boundary-label" x="695" y="28" text-anchor="middle">Edge Device</text>
 
   <!-- ============ External: Camera ============ -->
   <g transform="translate(50,150)">
-    <!-- camera body -->
     <rect class="actor-stroke" x="0" y="10" width="90" height="58" rx="6"/>
-    <!-- lens -->
     <circle class="actor-stroke" cx="45" cy="39" r="14"/>
     <circle cx="45" cy="39" r="7" fill="#1a1a1a"/>
-    <!-- flash -->
     <rect class="actor-stroke" x="68" y="16" width="14" height="6" rx="1"/>
-    <!-- bump on top -->
     <rect class="actor-stroke" x="30" y="2" width="30" height="10" rx="2"/>
     <text class="actor-label" x="45" y="88" text-anchor="middle">Camera</text>
     <text class="actor-sub" x="45" y="103" text-anchor="middle">(2 per table)</text>
   </g>
 
   <!-- ============ External: Pit boss ============ -->
-  <g transform="translate(55,490)">
-    <!-- phone body -->
+  <g transform="translate(55,500)">
     <rect class="actor-stroke" x="20" y="0" width="50" height="80" rx="7"/>
-    <!-- screen -->
     <rect x="26" y="8" width="38" height="58" rx="2" fill="#ffffff" stroke="#1a1a1a" stroke-width="1"/>
-    <!-- speaker -->
     <rect x="38" y="3" width="14" height="2" fill="#1a1a1a"/>
-    <!-- home button -->
     <circle cx="45" cy="72" r="3" fill="none" stroke="#1a1a1a" stroke-width="1"/>
     <text class="actor-label" x="45" y="100" text-anchor="middle">Pit boss</text>
   </g>
@@ -55,56 +47,63 @@
   <g>
     <rect class="box-fill" x="240" y="160" width="170" height="68" rx="10"/>
     <text class="box-title" x="325" y="188" text-anchor="middle">Gateway</text>
-    <text class="box-sub" x="325" y="206" text-anchor="middle">preprocessing &amp; routing</text>
+    <text class="box-sub" x="325" y="206" text-anchor="middle">frame routing</text>
   </g>
 
-  <!-- Calibration -->
+  <!-- Calibration workflow -->
   <g>
-    <rect class="box-fill" x="240" y="300" width="170" height="68" rx="10"/>
-    <text class="box-title" x="325" y="328" text-anchor="middle">Calibration</text>
-    <text class="box-sub" x="325" y="346" text-anchor="middle">20 keypoints · homography</text>
+    <rect class="box-fill" x="240" y="300" width="210" height="68" rx="10"/>
+    <text class="box-title" x="345" y="328" text-anchor="middle">Calibration workflow</text>
+    <text class="box-sub" x="345" y="346" text-anchor="middle">20 keypoints · homography</text>
+  </g>
+
+  <!-- Preprocessing -->
+  <g>
+    <rect class="box-fill" x="480" y="85" width="170" height="68" rx="10"/>
+    <text class="box-title" x="565" y="113" text-anchor="middle">Preprocessing</text>
+    <text class="box-sub" x="565" y="131" text-anchor="middle">homography warp</text>
   </g>
 
   <!-- Card workflow -->
   <g>
-    <rect class="box-fill" x="470" y="90" width="190" height="68" rx="10"/>
-    <text class="box-title" x="565" y="118" text-anchor="middle">Card workflow</text>
-    <text class="box-sub" x="565" y="136" text-anchor="middle">segmentation · ViT rank/suit</text>
+    <rect class="box-fill" x="700" y="85" width="200" height="68" rx="10"/>
+    <text class="box-title" x="800" y="113" text-anchor="middle">Card workflow</text>
+    <text class="box-sub" x="800" y="131" text-anchor="middle">segmentation · ViT rank/suit</text>
   </g>
 
   <!-- Chip workflow -->
   <g>
-    <rect class="box-fill" x="470" y="230" width="190" height="68" rx="10"/>
-    <text class="box-title" x="565" y="258" text-anchor="middle">Chip workflow</text>
-    <text class="box-sub" x="565" y="276" text-anchor="middle">location · class · count</text>
+    <rect class="box-fill" x="480" y="240" width="210" height="68" rx="10"/>
+    <text class="box-title" x="585" y="268" text-anchor="middle">Chip workflow</text>
+    <text class="box-sub" x="585" y="286" text-anchor="middle">location · class · count</text>
   </g>
 
-  <!-- K-means clustering -->
+  <!-- Card-chip association -->
   <g>
-    <rect class="box-fill" x="730" y="160" width="190" height="68" rx="10"/>
-    <text class="box-title" x="825" y="188" text-anchor="middle">K-means clustering</text>
-    <text class="box-sub" x="825" y="206" text-anchor="middle">K = card stacks</text>
+    <rect class="box-fill" x="940" y="160" width="220" height="68" rx="10"/>
+    <text class="box-title" x="1050" y="188" text-anchor="middle">Card–chip association</text>
+    <text class="box-sub" x="1050" y="206" text-anchor="middle">via K-means · K = card stacks</text>
   </g>
 
   <!-- Game-state machine -->
   <g>
-    <rect class="box-fill" x="730" y="300" width="190" height="68" rx="10"/>
-    <text class="box-title" x="825" y="328" text-anchor="middle">Game-state machine</text>
-    <text class="box-sub" x="825" y="346" text-anchor="middle">begin · in-process · end</text>
+    <rect class="box-fill" x="940" y="300" width="220" height="68" rx="10"/>
+    <text class="box-title" x="1050" y="328" text-anchor="middle">Game-state machine</text>
+    <text class="box-sub" x="1050" y="346" text-anchor="middle">begin · in-process · end</text>
   </g>
 
   <!-- DB / CMS -->
   <g>
-    <rect class="box-fill" x="730" y="490" width="190" height="68" rx="10"/>
-    <text class="box-title" x="825" y="518" text-anchor="middle">DB / CMS</text>
-    <text class="box-sub" x="825" y="536" text-anchor="middle">per-game metadata</text>
+    <rect class="box-fill" x="940" y="510" width="220" height="68" rx="10"/>
+    <text class="box-title" x="1050" y="538" text-anchor="middle">DB / CMS</text>
+    <text class="box-sub" x="1050" y="556" text-anchor="middle">per-game metadata</text>
   </g>
 
   <!-- LLM @ edge -->
   <g>
-    <rect class="box-fill" x="470" y="490" width="190" height="68" rx="10"/>
-    <text class="box-title" x="565" y="518" text-anchor="middle">LLM @ edge</text>
-    <text class="box-sub" x="565" y="536" text-anchor="middle">natural-language query</text>
+    <rect class="box-fill" x="480" y="510" width="200" height="68" rx="10"/>
+    <text class="box-title" x="580" y="538" text-anchor="middle">LLM @ edge</text>
+    <text class="box-sub" x="580" y="556" text-anchor="middle">natural-language query</text>
   </g>
 
   <!-- ============ Arrows ============ -->
@@ -113,45 +112,54 @@
   <line class="flow-line" x1="140" y1="190" x2="240" y2="190" marker-end="url(#arrow)"/>
   <text class="flow-label" x="190" y="183" text-anchor="middle">1. Frame in</text>
 
-  <!-- 2. Gateway ↔ Calibration (two parallel arrows) -->
-  <line class="flow-line" x1="290" y1="228" x2="290" y2="300" marker-end="url(#arrow)"/>
-  <line class="flow-line" x1="360" y1="300" x2="360" y2="228" marker-end="url(#arrow)"/>
+  <!-- 2. Gateway ↔ Calibration workflow (two parallel arrows) -->
+  <line class="flow-line" x1="280" y1="228" x2="280" y2="300" marker-end="url(#arrow)"/>
+  <line class="flow-line" x1="370" y1="300" x2="370" y2="228" marker-end="url(#arrow)"/>
   <text class="flow-label" x="325" y="258" text-anchor="middle">2. Validate</text>
   <text class="flow-label" x="325" y="278" text-anchor="middle">keypoints</text>
 
-  <!-- 3. Gateway → Card workflow -->
-  <line class="flow-line" x1="410" y1="178" x2="470" y2="124" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="402" y="148">3. Top-down</text>
+  <!-- Calibration workflow → Preprocessing (homography matrix info flow) -->
+  <line class="flow-line" x1="440" y1="300" x2="530" y2="153" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="510" y="222" text-anchor="middle">Homography matrix</text>
+
+  <!-- 3a. Gateway → Preprocessing (route — no number) -->
+  <line class="flow-line" x1="410" y1="175" x2="480" y2="120" marker-end="url(#arrow)"/>
+
+  <!-- 3b. Preprocessing → Card workflow -->
+  <line class="flow-line" x1="650" y1="119" x2="700" y2="119" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="675" y="108" text-anchor="middle">3. Top-down</text>
 
   <!-- 4. Gateway → Chip workflow -->
-  <line class="flow-line" x1="410" y1="210" x2="470" y2="260" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="402" y="240">4. Side-view</text>
+  <line class="flow-line" x1="410" y1="210" x2="480" y2="270" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="420" y="200">4. Side-view</text>
 
-  <!-- 5. Card → K-means + Chip → K-means (merging) -->
-  <line class="flow-line" x1="660" y1="124" x2="730" y2="180" marker-end="url(#arrow)"/>
-  <line class="flow-line" x1="660" y1="260" x2="730" y2="208" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="660" y="158">5. Cards + chips</text>
+  <!-- 5. Card workflow → Card-chip association -->
+  <line class="flow-line" x1="900" y1="119" x2="940" y2="180" marker-end="url(#arrow)"/>
 
-  <!-- 6. K-means → Game state -->
-  <line class="flow-line" x1="825" y1="228" x2="825" y2="300" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="838" y="270">6. Clusters</text>
+  <!-- 5. Chip workflow → Card-chip association -->
+  <line class="flow-line" x1="690" y1="270" x2="940" y2="208" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="810" y="200" text-anchor="middle">5. Cards + chips</text>
 
-  <!-- 7. Game state → DB / CMS -->
-  <line class="flow-line" x1="825" y1="368" x2="825" y2="490" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="838" y="438">7. Per-game</text>
-  <text class="flow-label" x="838" y="454">    metadata</text>
+  <!-- 6. Card-chip association → Game-state machine -->
+  <line class="flow-line" x1="1050" y1="228" x2="1050" y2="300" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="1065" y="270">6. Clusters</text>
 
-  <!-- 8. Pit boss → LLM -->
-  <line class="flow-line" x1="140" y1="520" x2="470" y2="520" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="305" y="513" text-anchor="middle">8. NL query</text>
+  <!-- 7. Game-state machine → DB/CMS -->
+  <line class="flow-line" x1="1050" y1="368" x2="1050" y2="510" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="1065" y="430">7. Per-game</text>
+  <text class="flow-label" x="1065" y="446">metadata</text>
+
+  <!-- 8. Pit boss → LLM @ edge -->
+  <line class="flow-line" x1="140" y1="540" x2="480" y2="540" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="310" y="532" text-anchor="middle">8. NL query</text>
 
   <!-- 9. LLM ↔ DB / CMS -->
-  <line class="flow-line" x1="660" y1="515" x2="730" y2="515" marker-end="url(#arrow)"/>
-  <line class="flow-line" x1="730" y1="535" x2="660" y2="535" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="695" y="505" text-anchor="middle">9. Lookup /</text>
-  <text class="flow-label" x="695" y="558" text-anchor="middle">    response</text>
+  <line class="flow-line" x1="680" y1="535" x2="940" y2="535" marker-end="url(#arrow)"/>
+  <line class="flow-line" x1="940" y1="555" x2="680" y2="555" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="810" y="525" text-anchor="middle">9. Lookup /</text>
+  <text class="flow-label" x="810" y="582" text-anchor="middle">response</text>
 
-  <!-- 10. LLM → Pit boss -->
-  <path class="flow-line" d="M 470 540 Q 305 590 140 555" marker-end="url(#arrow)"/>
-  <text class="flow-label" x="305" y="603" text-anchor="middle">10. Reply</text>
+  <!-- 10. LLM → Pit boss (curved return) -->
+  <path class="flow-line" d="M 480 565 Q 310 615 140 575" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="310" y="625" text-anchor="middle">10. Reply</text>
 </svg>

@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" role="img" aria-label="Block diagram of the edge perception pipeline: camera feeds into gateway, which routes to calibration, card workflow, and chip workflow; card and chip outputs feed K-means clustering, then a game-state machine, then DB or CMS. A pit boss queries an on-device LLM which reads from the DB or CMS.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box-fill { fill: #F2DCDC; stroke: #1a1a1a; stroke-width: 1.2; }
+      .box-title { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+      .box-sub { font-size: 11px; fill: #555; }
+      .actor-stroke { fill: #ffffff; stroke: #1a1a1a; stroke-width: 1.5; }
+      .actor-label { font-size: 13px; fill: #1a1a1a; font-weight: 500; }
+      .actor-sub { font-size: 10.5px; fill: #777; }
+      .flow-line { fill: none; stroke: #1a1a1a; stroke-width: 1.4; }
+      .flow-label { font-size: 12px; fill: #1a1a1a; font-style: italic; }
+      .boundary { fill: none; stroke: #3D5FA9; stroke-width: 2.5; stroke-dasharray: 10 6; }
+      .boundary-label { font-size: 16px; font-weight: 600; fill: #1a1a1a; letter-spacing: 0.02em; }
+    </style>
+  </defs>
+
+  <!-- Dashed system boundary -->
+  <rect class="boundary" x="200" y="40" width="850" height="640" rx="22"/>
+  <text class="boundary-label" x="625" y="28" text-anchor="middle">Edge Device</text>
+
+  <!-- ============ External: Camera ============ -->
+  <g transform="translate(50,150)">
+    <!-- camera body -->
+    <rect class="actor-stroke" x="0" y="10" width="90" height="58" rx="6"/>
+    <!-- lens -->
+    <circle class="actor-stroke" cx="45" cy="39" r="14"/>
+    <circle cx="45" cy="39" r="7" fill="#1a1a1a"/>
+    <!-- flash -->
+    <rect class="actor-stroke" x="68" y="16" width="14" height="6" rx="1"/>
+    <!-- bump on top -->
+    <rect class="actor-stroke" x="30" y="2" width="30" height="10" rx="2"/>
+    <text class="actor-label" x="45" y="88" text-anchor="middle">Camera</text>
+    <text class="actor-sub" x="45" y="103" text-anchor="middle">(2 per table)</text>
+  </g>
+
+  <!-- ============ External: Pit boss ============ -->
+  <g transform="translate(55,490)">
+    <!-- phone body -->
+    <rect class="actor-stroke" x="20" y="0" width="50" height="80" rx="7"/>
+    <!-- screen -->
+    <rect x="26" y="8" width="38" height="58" rx="2" fill="#ffffff" stroke="#1a1a1a" stroke-width="1"/>
+    <!-- speaker -->
+    <rect x="38" y="3" width="14" height="2" fill="#1a1a1a"/>
+    <!-- home button -->
+    <circle cx="45" cy="72" r="3" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    <text class="actor-label" x="45" y="100" text-anchor="middle">Pit boss</text>
+  </g>
+
+  <!-- ============ Internal Components ============ -->
+
+  <!-- Gateway -->
+  <g>
+    <rect class="box-fill" x="240" y="160" width="170" height="68" rx="10"/>
+    <text class="box-title" x="325" y="188" text-anchor="middle">Gateway</text>
+    <text class="box-sub" x="325" y="206" text-anchor="middle">preprocessing &amp; routing</text>
+  </g>
+
+  <!-- Calibration -->
+  <g>
+    <rect class="box-fill" x="240" y="300" width="170" height="68" rx="10"/>
+    <text class="box-title" x="325" y="328" text-anchor="middle">Calibration</text>
+    <text class="box-sub" x="325" y="346" text-anchor="middle">20 keypoints · homography</text>
+  </g>
+
+  <!-- Card workflow -->
+  <g>
+    <rect class="box-fill" x="470" y="90" width="190" height="68" rx="10"/>
+    <text class="box-title" x="565" y="118" text-anchor="middle">Card workflow</text>
+    <text class="box-sub" x="565" y="136" text-anchor="middle">segmentation · ViT rank/suit</text>
+  </g>
+
+  <!-- Chip workflow -->
+  <g>
+    <rect class="box-fill" x="470" y="230" width="190" height="68" rx="10"/>
+    <text class="box-title" x="565" y="258" text-anchor="middle">Chip workflow</text>
+    <text class="box-sub" x="565" y="276" text-anchor="middle">location · class · count</text>
+  </g>
+
+  <!-- K-means clustering -->
+  <g>
+    <rect class="box-fill" x="730" y="160" width="190" height="68" rx="10"/>
+    <text class="box-title" x="825" y="188" text-anchor="middle">K-means clustering</text>
+    <text class="box-sub" x="825" y="206" text-anchor="middle">K = card stacks</text>
+  </g>
+
+  <!-- Game-state machine -->
+  <g>
+    <rect class="box-fill" x="730" y="300" width="190" height="68" rx="10"/>
+    <text class="box-title" x="825" y="328" text-anchor="middle">Game-state machine</text>
+    <text class="box-sub" x="825" y="346" text-anchor="middle">begin · in-process · end</text>
+  </g>
+
+  <!-- DB / CMS -->
+  <g>
+    <rect class="box-fill" x="730" y="490" width="190" height="68" rx="10"/>
+    <text class="box-title" x="825" y="518" text-anchor="middle">DB / CMS</text>
+    <text class="box-sub" x="825" y="536" text-anchor="middle">per-game metadata</text>
+  </g>
+
+  <!-- LLM @ edge -->
+  <g>
+    <rect class="box-fill" x="470" y="490" width="190" height="68" rx="10"/>
+    <text class="box-title" x="565" y="518" text-anchor="middle">LLM @ edge</text>
+    <text class="box-sub" x="565" y="536" text-anchor="middle">natural-language query</text>
+  </g>
+
+  <!-- ============ Arrows ============ -->
+
+  <!-- 1. Camera → Gateway -->
+  <line class="flow-line" x1="140" y1="190" x2="240" y2="190" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="190" y="183" text-anchor="middle">1. Frame in</text>
+
+  <!-- 2. Gateway ↔ Calibration (two parallel arrows) -->
+  <line class="flow-line" x1="290" y1="228" x2="290" y2="300" marker-end="url(#arrow)"/>
+  <line class="flow-line" x1="360" y1="300" x2="360" y2="228" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="325" y="258" text-anchor="middle">2. Validate</text>
+  <text class="flow-label" x="325" y="278" text-anchor="middle">keypoints</text>
+
+  <!-- 3. Gateway → Card workflow -->
+  <line class="flow-line" x1="410" y1="178" x2="470" y2="124" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="402" y="148">3. Top-down</text>
+
+  <!-- 4. Gateway → Chip workflow -->
+  <line class="flow-line" x1="410" y1="210" x2="470" y2="260" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="402" y="240">4. Side-view</text>
+
+  <!-- 5. Card → K-means + Chip → K-means (merging) -->
+  <line class="flow-line" x1="660" y1="124" x2="730" y2="180" marker-end="url(#arrow)"/>
+  <line class="flow-line" x1="660" y1="260" x2="730" y2="208" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="660" y="158">5. Cards + chips</text>
+
+  <!-- 6. K-means → Game state -->
+  <line class="flow-line" x1="825" y1="228" x2="825" y2="300" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="838" y="270">6. Clusters</text>
+
+  <!-- 7. Game state → DB / CMS -->
+  <line class="flow-line" x1="825" y1="368" x2="825" y2="490" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="838" y="438">7. Per-game</text>
+  <text class="flow-label" x="838" y="454">    metadata</text>
+
+  <!-- 8. Pit boss → LLM -->
+  <line class="flow-line" x1="140" y1="520" x2="470" y2="520" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="305" y="513" text-anchor="middle">8. NL query</text>
+
+  <!-- 9. LLM ↔ DB / CMS -->
+  <line class="flow-line" x1="660" y1="515" x2="730" y2="515" marker-end="url(#arrow)"/>
+  <line class="flow-line" x1="730" y1="535" x2="660" y2="535" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="695" y="505" text-anchor="middle">9. Lookup /</text>
+  <text class="flow-label" x="695" y="558" text-anchor="middle">    response</text>
+
+  <!-- 10. LLM → Pit boss -->
+  <path class="flow-line" d="M 470 540 Q 305 590 140 555" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="305" y="603" text-anchor="middle">10. Reply</text>
+</svg>

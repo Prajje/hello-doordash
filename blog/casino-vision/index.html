@@ -151,6 +151,11 @@
 
         <p>This value comes directly from the segmentation output. K is not a tuned hyperparameter; it is derived from the game state every frame. The upstream model fixes it for free.</p>
 
+        <figure>
+          <img src="assets/k-progression.jpg" alt="A three-panel composite showing the same blackjack table at three successive moments in a round. Step 1: one player hand dealt — one card stack, one chip stack. Step 2: a second player hand has been dealt — two card stacks, two chip stacks. Step 3: a third player hand has been dealt — three card stacks, three chip stacks. The dealer hand is constant across all three panels." />
+          <figcaption>The K-from-game-state invariant in action. As successive hands are dealt across a single round, the number of card stacks grows from 1 to 2 to 3 — and K-means uses exactly that count as its K every frame. No tuning, no hyperparameter.</figcaption>
+        </figure>
+
         <p class="phase-h">Anchoring at the begin state</p>
 
         <p>K-means groups chip stacks to card stacks. The second half of association is mapping each <code>(cards, chips)</code> cluster to a specific player seat. A state-machine service handles this. The service maintains three explicit game states:</p>
